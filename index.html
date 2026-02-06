@@ -3,18 +3,468 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>لوحة التحكم | Sudan War Updates</title>
-  <style>
-    body { margin: 0; font-family: "Tajawal", system-ui, sans-serif; background: #0f1115; color: #f6f4ef; }
-    .wrap { max-width: 760px; margin: 0 auto; padding: 24px; }
-    .note { background: #151923; border: 1px solid rgba(255,255,255,0.08); padding: 16px; border-radius: 12px; }
-  </style>
+  <meta name="theme-color" content="#0f1115" />
+  <meta name="description" content="Sudan War Updates منصة إخبارية لمتابعة تطورات السودان أولاً بأول" />
+  <link rel="icon" href="./favicon.ico" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet" />
+  <title>Sudan War Updates</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --panel: #151923;
+      --panel-2: #1b2130;
+      --ink: #f6f4ef;
+      --muted: #b7bcc9;
+      --accent: #d8b78a;
+      --accent-2: #9cc2d6;
+      --line: rgba(255,255,255,0.08);
+      --shadow: 0 20px 60px rgba(0,0,0,0.35);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Tajawal", system-ui, -apple-system, Segoe UI, sans-serif;
+      background:
+        radial-gradient(1200px 700px at 85% -10%, #232634 0%, transparent 55%),
+        radial-gradient(900px 600px at -10% 10%, #2a2f3b 0%, transparent 50%),
+        var(--bg);
+      color: var(--ink);
+      line-height: 1.75;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    .container { width: min(1200px, 92vw); margin: 0 auto; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(10px);
+      background: rgba(15,17,21,0.75);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 0;
+      gap: 24px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+    .brand-mark {
+      width: 54px;
+      height: 54px;
+      border-radius: 14px;
+      background: #202532;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid var(--line);
+    }
+    .brand-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .brand-name { font-size: 20px; }
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .nav-cta { display: flex; gap: 10px; }
+    .btn {
+      border: 1px solid var(--line);
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-weight: 700;
+      background: transparent;
+      color: var(--ink);
+      transition: all 0.2s ease;
+    }
+    .btn:hover { transform: translateY(-1px); border-color: rgba(255,255,255,0.25); }
+    .btn.primary {
+      background: linear-gradient(120deg, var(--accent), var(--accent-2));
+      color: #1a1a1a;
+      border: none;
+    }
+
+    .hero {
+      padding: 70px 0 50px;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 28px;
+      align-items: center;
+    }
+    .hero-content { grid-column: span 7; }
+    .hero h1 {
+      font-size: clamp(32px, 4vw, 54px);
+      margin: 0 0 18px;
+      font-weight: 800;
+    }
+    .hero p { color: var(--muted); margin: 0 0 26px; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero-card {
+      grid-column: span 5;
+      background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+      border: 1px solid var(--line);
+      padding: 24px;
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(300px 200px at 20% 20%, rgba(216,183,138,0.18), transparent 60%);
+      pointer-events: none;
+    }
+    .stat {
+      display: grid;
+      gap: 8px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .stat:last-child { border-bottom: none; }
+    .stat .label { color: var(--muted); font-size: 14px; }
+    .stat .value { font-weight: 700; font-size: 18px; }
+
+    .ticker {
+      display: flex;
+      gap: 16px;
+      overflow: hidden;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,0.02);
+    }
+    .ticker-track {
+      display: flex;
+      gap: 28px;
+      padding: 14px 0;
+      animation: scroll 30s linear infinite;
+      white-space: nowrap;
+    }
+    .ticker-item { color: var(--muted); }
+    .ticker-item.urgent { color: var(--accent); font-weight: 700; }
+    @keyframes scroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(50%); }
+    }
+
+    .section { padding: 60px 0; }
+    .section-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .section-title h2 { margin: 0; font-size: clamp(24px, 3vw, 34px); }
+    .section-title span { color: var(--muted); }
+
+    .grid {
+      display: grid;
+      gap: 22px;
+    }
+    .grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+
+    .story {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px;
+      display: grid;
+      gap: 10px;
+      min-height: 220px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .story:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.2); }
+    .story .tag {
+      background: rgba(216,183,138,0.15);
+      color: var(--accent);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      width: fit-content;
+    }
+    .story h3 { margin: 0; font-size: 18px; }
+    .story p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    .two-col {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .update {
+      background: var(--panel-2);
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+    }
+    .update time { font-size: 12px; color: var(--muted); }
+    .update h4 { margin: 0; font-size: 16px; }
+    .update p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    .newsletter {
+      background: linear-gradient(135deg, rgba(216,183,138,0.16), rgba(156,194,214,0.12));
+      border: 1px solid rgba(216,183,138,0.25);
+      border-radius: 26px;
+      padding: 28px;
+      display: grid;
+      gap: 18px;
+      box-shadow: var(--shadow);
+    }
+    .newsletter input {
+      background: rgba(0,0,0,0.35);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+      color: var(--ink);
+      font-family: inherit;
+    }
+
+    footer {
+      padding: 40px 0 60px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+    }
+    .footer-grid {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    .footer-title { color: var(--ink); font-weight: 700; margin-bottom: 12px; }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-content, .hero-card { grid-column: span 1; }
+      .nav-links { display: none; }
+    }
+  </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="note">سيتم تحميل لوحة التحكم خلال لحظات...</div>
-  </div>
-  <script src="https://unpkg.com/decap-cms@^3/dist/decap-cms.js"></script>
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="brand-mark">
+          <img src="./SW/favicon.ico" alt="Sudan War Updates Logo" />
+        </div>
+        <div>
+          <div class="brand-name">Sudan War Updates</div>
+          <div style="color: var(--muted); font-size: 12px;">منصة مستقلة لتوثيق الأحداث والتحقق</div>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="#top">الرئيسية</a>
+        <a href="#reports">التقارير</a>
+        <a href="#timeline">الجدول الزمني</a>
+        <a href="#insights">تحليلات</a>
+        <a href="#contact">تواصل</a>
+      </nav>
+      <div class="nav-cta">
+        <button class="btn">دخول القرّاء</button>
+        <button class="btn primary">اشترك الآن</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top" class="container">
+    <section class="hero">
+      <div class="hero-content">
+        <p style="color: var(--accent); font-weight: 700;">تغطية لحظية موثقة</p>
+        <h1>نضع الصورة الكاملة لتطورات السودان في مكان واحد</h1>
+        <p>تحديثات ميدانية، خرائط تفاعلية، تحليل بيانات، وتحقق من الأخبار الكاذبة. فريقنا يجمع المعلومات من مصادر محلية ودولية مع تدقيق متعدد المستويات.</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#reports">ابدأ القراءة</a>
+          <a class="btn" href="#timeline">شاهد الجدول الزمني</a>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="stat">
+          <div class="label">آخر تحديث ميداني</div>
+          <div class="value">منذ 18 دقيقة</div>
+        </div>
+        <div class="stat">
+          <div class="label">تقارير التحقق اليوم</div>
+          <div class="value">14 تقرير</div>
+        </div>
+        <div class="stat">
+          <div class="label">مراسلون محليون</div>
+          <div class="value">32 مراسل</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section class="ticker">
+    <div class="ticker-track" id="ticker-track">
+      <div class="ticker-item urgent">عاجل •</div>
+      <div class="ticker-item">تنبيه أمني: تحديثات حول المناطق المتأثرة •</div>
+      <div class="ticker-item">تحرك ميداني جديد في الخرطوم •</div>
+      <div class="ticker-item">مستجدات المساعدات الإنسانية خلال الساعة الأخيرة •</div>
+      <div class="ticker-item">بيان رسمي بخصوص الممرات الآمنة •</div>
+      <div class="ticker-item urgent">عاجل •</div>
+      <div class="ticker-item">تنبيه أمني: تحديثات حول المناطق المتأثرة •</div>
+      <div class="ticker-item">تحرك ميداني جديد في الخرطوم •</div>
+      <div class="ticker-item">مستجدات المساعدات الإنسانية خلال الساعة الأخيرة •</div>
+      <div class="ticker-item">بيان رسمي بخصوص الممرات الآمنة •</div>
+    </div>
+  </section>
+
+  <main class="container">
+    <section id="reports" class="section">
+      <div class="section-title">
+        <h2>أبرز التقارير</h2>
+        <span>مختارة من فريق التحرير</span>
+      </div>
+      <div class="grid cols-3">
+        <article class="story">
+          <span class="tag">تحقق</span>
+          <h3>تفنيد الشائعات حول الإمدادات الطبية في الخرطوم</h3>
+          <p>تحليل مصادر متعددة وبيانات صور أقمار صناعية لتتبع مسار المساعدات.</p>
+        </article>
+        <article class="story">
+          <span class="tag">ميدان</span>
+          <h3>أوضاع المدنيين في أمدرمان خلال الـ 48 ساعة الماضية</h3>
+          <p>شهادات ميدانية ومؤشرات النزوح وأثرها على الخدمات الأساسية.</p>
+        </article>
+        <article class="story">
+          <span class="tag">بيانات</span>
+          <h3>خارطة تفاعلية لمستوى المخاطر في الولايات</h3>
+          <p>مؤشرات تصاعد التوتر، حركة النزوح، وتوفر الممرات الآمنة.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="timeline" class="section">
+      <div class="section-title">
+        <h2>الجدول الزمني اليومي</h2>
+        <span>تحديثات متدرجة حسب التوقيت</span>
+      </div>
+      <div class="two-col">
+        <div class="update">
+          <time>06:45 صباحاً</time>
+          <h4>تقرير ميداني من شمال دارفور</h4>
+          <p>انخفاض مؤقت في حدة الاشتباكات وتحركات للمنظمات الإنسانية.</p>
+        </div>
+        <div class="update">
+          <time>09:30 صباحاً</time>
+          <h4>إطلاق موجة جديدة من التحذيرات الأمنية</h4>
+          <p>توصيات للسكان حول مناطق التجمعات والممرات الآمنة.</p>
+        </div>
+        <div class="update">
+          <time>12:15 ظهراً</time>
+          <h4>تحليل بيانات الاتصالات</h4>
+          <p>تراجع في التغطية الشبكية في بعض المناطق نتيجة انقطاعات الطاقة.</p>
+        </div>
+        <div class="update">
+          <time>04:10 مساءً</time>
+          <h4>نشاط ملحوظ في عمليات الإجلاء</h4>
+          <p>توثيق حركة جديدة للنزوح مع شراكات محلية لتنسيق المساعدات.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="insights" class="section">
+      <div class="section-title">
+        <h2>تحليلات وبيانات</h2>
+        <span>رؤية أعمق لما يحدث</span>
+      </div>
+      <div class="grid cols-3">
+        <article class="story">
+          <span class="tag">تحليل</span>
+          <h3>كيف تتغيّر خريطة الوصول الإنساني أسبوعياً</h3>
+          <p>مقارنة أسبوعية للممرات الآمنة ومسارات المساعدات.</p>
+        </article>
+        <article class="story">
+          <span class="tag">مرئي</span>
+          <h3>لوحة بيانات الإنذار المبكر</h3>
+          <p>مؤشرات ارتفاع المخاطر ونقاط التوتر الساخنة.</p>
+        </article>
+        <article class="story">
+          <span class="tag">ملخص</span>
+          <h3>موجز الليلة: أبرز ما يجب معرفته</h3>
+          <p>نقاط سريعة تسهّل على القارئ متابعة الأحداث اليومية.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <h2>النشرة البريدية</h2>
+        <span>يصل إليك موجز موثوق كل صباح</span>
+      </div>
+      <div class="newsletter">
+        <div>
+          <h3 style="margin: 0 0 8px;">انضم إلى مجتمع المتابعين</h3>
+          <p style="margin: 0; color: var(--muted);">رسائل قصيرة، دون ضجيج، مع روابط للتفاصيل والتحقق.</p>
+        </div>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <input type="email" placeholder="البريد الإلكتروني" />
+          <button class="btn primary">اشترك</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contact">
+    <div class="container footer-grid">
+      <div>
+        <div class="footer-title">عن المنصة</div>
+        <p>Sudan War Updates منصة إخبارية مستقلة تجمع التحديثات الميدانية والتحليلات الموثقة لدعم المجتمع والصحافة المسؤولة.</p>
+      </div>
+      <div>
+        <div class="footer-title">تواصل سريع</div>
+        <p>info@sudanwarupdates.org</p>
+        <p>واتساب: +249 000 000 000</p>
+      </div>
+      <div>
+        <div class="footer-title">روابط</div>
+        <p>سياسة الخصوصية</p>
+        <p>إرشادات التحقق</p>
+        <p>الانضمام للشبكة</p>
+      </div>
+    </div>
+  </footer>
+  <script>
+    (function () {
+      const track = document.getElementById("ticker-track");
+      if (!track) return;
+
+      fetch("./content/news.json")
+        .then((res) => res.json())
+        .then((data) => {
+          if (!data || !Array.isArray(data.items) || data.items.length === 0) return;
+          const items = data.items;
+          const fragments = [];
+          for (let i = 0; i < items.length; i += 1) {
+            const item = items[i];
+            fragments.push(
+              `<div class="ticker-item urgent">${item.tag || "عاجل"} •</div>`,
+              `<div class="ticker-item">${item.title} •</div>`
+            );
+          }
+          track.innerHTML = fragments.concat(fragments).join("");
+        })
+        .catch(() => {
+          // Fallback to static items already in HTML
+        });
+    })();
+  </script>
 </body>
 </html>
