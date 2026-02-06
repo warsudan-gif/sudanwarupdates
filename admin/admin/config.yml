@@ -1,0 +1,25 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "breaking"
+    label: "الأخبار العاجلة"
+    files:
+      - name: "ticker"
+        label: "شريط عاجل"
+        file: "content/news.json"
+        format: "json"
+        fields:
+          - label: "العناصر"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.title}}"
+            fields:
+              - { label: "العنوان", name: "title", widget: "string" }
+              - { label: "الملخص", name: "summary", widget: "string" }
+              - { label: "التوقيت", name: "time", widget: "string" }
+              - { label: "الوسم", name: "tag", widget: "string", default: "عاجل" }
